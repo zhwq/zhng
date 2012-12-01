@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>公文办理情况输出</title>
+    <style type="text/css">
+        * {padding:0;margin:0}
+        body {padding: 10px;}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        table td {
+            border: 1px solid red;
+            border-collapse: collapse;
+        }
+        .doc_handle {
+            width: 100%;
+            height: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <table id="dataTable">
+       <tr>
+           <td style="width:20%">列序号1</td>
+           <td>办理情况</td>    
+       </tr>
+   </table>
+<script type="text/javascript">
+    // 插入办理数据
+    function insertHandleRecord() {
+        // 文档碎片测试
+        var dealedData = [
+            {
+                handler: '张三',
+                opinion: '办理意见',
+                time: '2012-11-30 09:50'
+            },
+            {
+                handler: '李斯',
+                opinion: '办理意见',
+                time: '2012-11-30 11:50'
+            },
+            {
+                handler: '王老五',
+                opinion: '办理意见',
+                time: '2012-11-30 13:50'
+            },
+            {
+                handler: '赵刘',
+                opinion: '办理意见',
+                time: '2012-11-31 16:50'
+            }
+        ];
+        var dealedHtml = document.createDocumentFragment();
+        // ie7下直接插入tr不显示
+        // 1. 使用tbody包裹
+        // 2. 使用insertCell insertRow?
+        var tbody = document.createElement('tbody');
+
+        var tr = document.createElement('tr');
+        
+        var td1 = document.createElement('td');
+        td1.setAttribute('style', 'width:20%;');
+        var td1Text = document.createTextNode('1');
+        td1.appendChild(td1Text);
+        tr.appendChild(td1);
+
+        var td2 = document.createElement('td');
+        var divCon = document.createElement('div');
+        //divCon.setAttribute('class', 'doc_handle'); // ie7不支持
+        //divCon.setAttribute('className', 'doc_handle'); // chrome 不支持
+        //兼容设置属性class的值
+        divCon.className = 'doc_handle';
+        // 标题
+        var h3 = document.createElement('h3');
+        var h3Text = document.createTextNode('已办');
+        h3.appendChild(h3Text);
+        divCon.appendChild(h3);
+        // 已办内容
+        var i, len;
+        for (i = 0, len = dealedData.length; i < len; i++) {
+            var data = dealedData[i];
+            var p = document.createElement('p');
+            var pText = document.createTextNode([data.handler, data.opinion, data.time].join('、'));
+            p.appendChild(pText);
+            divCon.appendChild(p);
+        }
+        td2.appendChild(divCon);
+        tr.appendChild(td2);
+        tbody.appendChild(tr);
+        dealedHtml.appendChild(tbody);
+        
+        // console.log(dealedHtml);
+
+        // 插入文档后 内容没了
+        document.getElementById('dataTable').appendChild(dealedHtml);
+    }
+    insertHandleRecord();
+    // 在节点后插入?
+    function insertAfter(insertNode, baseNode) {}
+</script>       
+</body>
+</html>
