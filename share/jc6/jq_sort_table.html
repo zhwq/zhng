@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>静态列表排序@2012-11-11-28</title>
+    <style type="text/css">
+        * {padding:0;margin:0}
+        body {padding: 10px;}
+        .body_con {
+            overflow: auto;
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        #sortTable {
+            outline: 1px dashed red;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #sortTable td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        input[data-direction] {
+            width: 45px;
+        }
+    </style>
+</head>
+<body>
+<div class="body_con">
+    <table id="sortTable">
+        <thead>
+            <tr>
+                <td>序号</td>
+                <td>名字</td>
+                <td>排序操作</td>
+            </tr>
+        </thead>
+    </table>
+    <input type="button" value="获取新的数据" id="getData"/> 
+</div>    
+<!-- <script type="text/javascript" src="/javascripts/jquery-1.7.1.js"></script> -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+    // Unique ID
+    var UID = (new Date()).getTime();
+    function createUid() {
+       return (UID++).toString(36);
+    }
+    var personData = [{
+        uid: createUid(),
+        name: '张山'
+    },
+    {
+        uid: createUid(),
+        name: '里斯'
+    },
+    {
+        uid: createUid(),
+        name: '硅谷'
+    },
+    {
+        uid: createUid(),
+        name: '录像'
+    },
+    {
+        uid: createUid(),
+        name: '场景'
+    }];
+    function buildTrs(data, $container) {
+        var trHtml = '<tbody>';
+        var i, len;
+        for(i = 0, len = data.length; i < len; i++) {
+            var person = data[i];
+            trHtml += '<tr data-personId="' + person.uid + '"><td>'+ (i + 1)+'</td><td>' + person.name + '</td><td><input type="button" value="上" data-direction="up" /><input type="button" value="下" data-direction="down" /></td></tr>'; 
+        }
+        trHtml += '</tbody>';
+        $container.append(trHtml);
+    }
+    var $sortTable = $('#sortTable');
+    //?fragment 文档片段?
+    buildTrs(personData, $sortTable);
+
+    
+    // 绑定点击事件
+    var $allDataTr = $sortTable.find('>tbody>tr');
+    var totalDataIndex = $allDataTr.length -1;
+    // 缓存会出问题 需要获取最新的
+    $('#sortTable').delegate(':button[data-direction]', 'click', function () {
+        var $btn = $(this);
+        var $tr = $btn.parents('tr');
+        var currentIndex = $tr.index();
+        var moveDirection = $btn.attr('data-direction') === 'up' ? -1 : 1;
+        var targetIndex = currentIndex + moveDirection;
+        var $targetTr = $allDataTr.eq(targetIndex);
+        if (targetIndex < 0) {
+            // 第一行 向上
+            return;
+        } else if (targetIndex > totalDataIndex) {
+            // 最后一行 向下
+            return;
+        } else {
+            // 在中间 处理移动
+            if (moveDirection === -1) { // 向上移动
+                $tr.remove().insertBefore($targetTr);
+            } else if(moveDirection === 1) {// 向下移动
+                $tr.remove().insertAfter($targetTr);
+            }
+            // 移动后更新内容
+            $tr.find('>td:first').html(++targetIndex);
+            $targetTr.find('>td:first').html(++currentIndex);
+            $allDataTr = $sortTable.find('>tbody>tr');
+        }
+    });
+    $('#getData').click(function () {
+        // 返回的数组数据
+        var returnData = $sortTable.find('>tbody>tr').map(function(index, domEl) {
+            var $tr = $(domEl);
+            return {
+               uid: $tr.attr('data-personId'),
+               name: $.trim($tr.find('>td:eq(1)').html()) 
+            };
+        }).get();
+        var idArray = [];
+        var nameArray = [];
+        var i, len;
+        for (i = 0, len = returnData.length; i < len; i++) {
+            var dataItem = returnData[i];
+            idArray[idArray.length] = dataItem.uid;
+            nameArray[nameArray.length] = dataItem.name;
+        }
+        // 返回的数组数据
+        //console.dir(returnData);
+        //id串
+        alert(idArray.join(','));
+        //name串
+        alert(nameArray.join(','));
+    });
+</script>
+</body>
+</html>
