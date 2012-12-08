@@ -1008,6 +1008,26 @@ var flagsCache = {};
 
 // Convert String-formatted flags into Object-formatted ones and store in cache
 // 将字符串 空格 分隔的 转换成对象字面量形式并保存在cache变量中
+// 常见组合
+// ""
+// "once"
+// "memory"
+// "unique"
+// "stopOnFalse"
+// "once memory"
+// "once unique"
+// "once stopOnFalse"
+// "memory unique"
+// "memory stopOnFalse"
+// "unique stopOnFalse"
+// ...
+// 例如:
+// 执行 create("once stopOnFalse")
+// 返回
+// {
+// 	once: true,
+// 	stopOnFalse: true
+// }
 function createFlags( flags ) {
 	var object = flagsCache[ flags ] = {},
 		i, length;
@@ -1113,13 +1133,17 @@ jQuery.Callbacks = function( flags ) {
 		// 触发回调
 		fire = function( context, args ) {
 			args = args || [];
+			// true 或者是由上下文 参数组成的数组
 			memory = !flags.memory || [ context, args ];
 			firing = true;
 			firingIndex = firingStart || 0;
+			// 重置开始游标
 			firingStart = 0;
+			// 回调列表长度
 			firingLength = list.length;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
 				// 执行回调 并 根据方法的返回值和 中止配置标识 stopOnFalse决定是否退出循环
+				// 传入参数含有stopOnFalse
 				if ( list[ firingIndex ].apply( context, args ) === false && flags.stopOnFalse ) {
 					memory = true; // Mark as halted ??
 					break;
@@ -1127,21 +1151,29 @@ jQuery.Callbacks = function( flags ) {
 			}
 			firing = false;
 			if ( list ) {
+				// 传入参数flags中不含once 此不只执行一次
+				// 在上面循环执行完后 检测是否可再执行
 				if ( !flags.once ) {
+					// jQuery.Callbacks函数AO下变量stack 初始为 []
+					// 如果stack?的长度不为 0
 					if ( stack && stack.length ) {
 						memory = stack.shift();
 						self.fireWith( memory[ 0 ], memory[ 1 ] );
 					}
 				} else if ( memory === true ) {
+					//初始化 list stack memory为undefined
+					//同时返回Callbacks对象
 					self.disable();
 				} else {
 					list = [];
 				}
 			}
 		},
+	// jQuery.Callbacks函数AO局部变量
 		// Actual Callbacks object
 		// 真实的回调对象
 		// ? fire fireWith
+		// 执行jQuery.Callbacks时返回self对象
 		self = {
 			// Add a callback or a collection of callbacks to the list
 			// 添加到当前列表list中
@@ -1267,9 +1299,16 @@ jQuery.Callbacks = function( flags ) {
 				// 上下文, 参数?
 				if ( stack ) {
 					if ( firing ) {
+						// 未限制只执行一次
+						// 将传入的上下文对象和参数 入栈stack
+						// 保持上次执行环境(上下文对象和实参)
+						// 供再次触发
 						if ( !flags.once ) {
 							stack.push( [ context, args ] );
 						}
+					// 不限制只执行一次
+					// 同时memory为 undefined memory为Callbacks函数AO下本地变量
+					// 触发回调列表
 					} else if ( !( flags.once && memory ) ) {
 						fire( context, args );
 					}
@@ -1284,6 +1323,9 @@ jQuery.Callbacks = function( flags ) {
 			},
 			// To know if the callbacks have already been called at least once
 			// 是否已被触发调用过
+			// memory可能的值为
+			// undefined 初始状态
+			// true 执行 中止时
 			fired: function() {
 				return !!memory;
 			}
@@ -1301,8 +1343,10 @@ var // Static reference to slice
 jQuery.extend({
 
 	Deferred: function( func ) {
+		// doneList failList对应回调只执行一次 并能保持上次执行环境
 		var doneList = jQuery.Callbacks( "once memory" ),
 			failList = jQuery.Callbacks( "once memory" ),
+			// progressList 能保持上次执行环境
 			progressList = jQuery.Callbacks( "memory" ),
 			state = "pending",
 			lists = {
@@ -1310,8 +1354,10 @@ jQuery.extend({
 				reject: failList,
 				notify: progressList
 			},
+			// Deferred函数AO本地变量
 			promise = {
 				// jQuery.Callbacks self.add
+				// 加入列表 并找机会触发回调
 				done: doneList.add,
 				fail: failList.add,
 				progress: progressList.add,
@@ -1323,18 +1369,24 @@ jQuery.extend({
 				// Deprecated
 				isResolved: doneList.fired,
 				isRejected: failList.fired,
-
+				// 对add方法进行一步封装
 				then: function( doneCallbacks, failCallbacks, progressCallbacks ) {
 					// 往3中列表中加入回调方法
+					// deferred = promise.promise({})
+					// 将promise中的属性通过前拷贝枚举的方式复制给defered
+					// promise.done
 					deferred.done( doneCallbacks ).fail( failCallbacks ).progress( progressCallbacks );
 					return this;
 				},
+				// ? 链式调用
+				// 使用特定上下文defered执行add方法
 				always: function() {
 					deferred.done.apply( deferred, arguments ).fail.apply( deferred, arguments );
 					return this;
 				},
 				// TODO: pipe
 				pipe: function( fnDone, fnFail, fnProgress ) {
+					// TODO: newDefer?
 					return jQuery.Deferred(function( newDefer ) {
 						jQuery.each( {
 							done: [ fnDone, "resolve" ],
@@ -1346,6 +1398,7 @@ jQuery.extend({
 								returned;
 							if ( jQuery.isFunction( fn ) ) {
 								deferred[ handler ](function() {
+									// this defered?
 									returned = fn.apply( this, arguments );
 									if ( returned && jQuery.isFunction( returned.promise ) ) {
 										returned.promise().then( newDefer.resolve, newDefer.reject, newDefer.notify );
@@ -1362,10 +1415,14 @@ jQuery.extend({
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				// 拷贝promise对象的属性给传入对象并返回该传入对象
+
+				// defered对象调用promise()方法
+				// 返回的对象obj只拥有与改变状态无关的方法
 				promise: function( obj ) {
 					if ( obj == null ) {
 						obj = promise;
 					} else {
+						// 在参数对象上增加primise下的方法
 						for ( var key in promise ) {
 							obj[ key ] = promise[ key ];
 						}
@@ -1376,7 +1433,9 @@ jQuery.extend({
 			deferred = promise.promise({}),
 			key;
 		// 复制增强
-		// fire fireWith
+		// resolve: doneList,
+		// reject: failList,
+		// notify: progressList
 		for ( key in lists ) {
 			deferred[ key ] = lists[ key ].fire;
 			deferred[ key + "With" ] = lists[ key ].fireWith;
@@ -1404,9 +1463,15 @@ jQuery.extend({
 		var args = sliceDeferred.call( arguments, 0 ),
 			i = 0,
 			length = args.length,
+			// 根据参数个数构建一个新的空数组
+			// process value
 			pValues = new Array( length ),
 			count = length,
 			pCount = length,
+			// 参数个数 <= 1
+			// 传入了参数firstParam
+			// 参数firstParam的promise是方法
+			// 传入的firstParam?
 			deferred = length <= 1 && firstParam && jQuery.isFunction( firstParam.promise ) ?
 				firstParam :
 				jQuery.Deferred(),

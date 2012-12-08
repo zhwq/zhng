@@ -4,9 +4,45 @@
     <meta charset="UTF-8"/>
     <title>jquery callbacks</title>
     <link rel="stylesheet" href="../../stylesheets/reset.css">
-    <script type="text/javascript" src="../../javascripts/jquery-1.7.1.js"></script>
 </head>
 <body>
-    jquery callbacks
+<div id="result"></div>
+<script type="text/javascript" src="../../javascripts/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+    //var $deferred = $.Deferred();
+    //var $promise = $deferred.promise();
+    var $result = $('#result'); 
+    function task() {
+        //console.log('@task');
+        $('<p />').html('@task').appendTo($result);
+        // 创建deferred对象
+        var $deferred = $.Deferred();
+        // 改变deferred对象状态为resolved
+        var timePoint = (new Date()).getTime();
+        // 循环5秒
+        // var newTP;
+        // while ( (newTP = (new Date()).getTime()) - timePoint < 5000) {
+        //     //console.log('newTP: ' + newTP);
+        // }
+        while ( (new Date).getTime() - timePoint < 3000);
+        $deferred.resolve();
+        // 返回promise对象来观察
+        // Return a Promise object to observe when all actions of a certain type 
+        // bound to the collection, queued or not, have finished
+        return $deferred.promise();
+    }
+
+    // Provides a way to execute callback functions based on one or more objects,
+    // usually Deferred objects that represent asynchronous events
+    $.when(task()).then(function () {
+        // resolved
+        //console.log('resolved');
+        $('<p />').html('resolved').appendTo($result);
+    }, function () {
+        // rejected
+        //console.log('rejected');
+        $('<p />').html('rejected').appendTo($result);
+    });
+</script>
 </body>
 </html>
