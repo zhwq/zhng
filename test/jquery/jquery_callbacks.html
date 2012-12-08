@@ -17,7 +17,6 @@
         $('<p />').html('@task').appendTo($result);
         // 创建deferred对象
         var $deferred = $.Deferred();
-        // 改变deferred对象状态为resolved
         var timePoint = (new Date()).getTime();
         // 循环5秒
         // var newTP;
@@ -25,6 +24,7 @@
         //     //console.log('newTP: ' + newTP);
         // }
         while ( (new Date).getTime() - timePoint < 3000);
+        // 改变deferred对象状态为resolved
         $deferred.resolve();
         // 返回promise对象来观察
         // Return a Promise object to observe when all actions of a certain type 
