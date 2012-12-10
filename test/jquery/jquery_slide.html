@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>jquery-slideUp, slideDown, slideTogge</title>
+    <link rel="stylesheet" href="../../stylesheets/reset.css"/>
+    <style type="text/css">
+        body {text-align:center;}
+        ul {outline: 1px dashed red;margin: 0 auto;text-align:center;line-height:150%;}
+        #upDown {
+            background-color: red;
+            width: 100px;
+            height: 25px;
+            margin: 3px auto;
+        }
+    </style>
+    <script type="text/javascript" src="../../javascripts/jquery-1.7.1.js"></script>
+</head>
+<body>
+    <ul>
+        <li>slideUp: Hide the matched elements with a sliding motion</li>
+        <li>slideDown: Display the matched elements with a sliding motion</li>
+        <li>slideToggle: Display or hide the matched elements with a sliding motion</li>
+    </ul>
+    <div id="upDown"></div>
+    <input type="button" value="slideToggle" id="showHide">
+    <script type="text/javascript">
+        var $upDown = $('#upDown');
+        $upDown.click(function () {
+            // go to hide
+            $upDown.slideUp();
+        });
+        $('#showHide').click(function () {
+            $upDown.slideToggle(function () {
+                console.log('slideToggle callback~');
+            });
+        });
+    </script>
+</body>
+</html>
