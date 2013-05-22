@@ -75,12 +75,12 @@
                 </li>
                 <li data-sid="2">
                     <div class="page" data-page="2">
-						<img alt="视图2" title="图片库" width="600" height="220" src="../../images/works/jinher-portal-fw.png"/>
+						<img alt="视图2" title="金和JCS平台前台框架-v1" width="600" height="220" src="../../images/works/jinher-portal-fw.png"/>
 					</div>
                 </li>
                 <li data-sid="3">
                     <div class="page" data-page="3">
-						<img alt="视图3" title="金和JCS平台前台框架" width="600" height="220"  src="../../images/works/jiner-portal-v3.png"/>
+						<img alt="视图3" title="金和JCS平台前台框架-v2" width="600" height="220"  src="../../images/works/jiner-portal-v3.png"/>
 					</div>
                 </li>
                 <li data-sid="4">
@@ -666,9 +666,10 @@
 // touch
 // drag & drop 事件模拟
 $('#styleBtn').click(function () {
-    $('#styleOutput').append($('<p />').html(slideObj.deltaX));
-    $('#styleOutput').append($('<p />').html(slideObj.offsetX));
-    $('#styleOutput').append($('<p />').html(slideObj.slider.style.cssText));
+	var $styleOutput = $('#styleOutput');
+    $styleOutput.append($('<p />').html(slideObj.deltaX));
+    $styleOutput.append($('<p />').html(slideObj.offsetX));
+    $styleOutput.append($('<p />').html(slideObj.slider.style.cssText));
 });
 </script>
 </body>
