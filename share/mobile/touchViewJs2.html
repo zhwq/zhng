@@ -1,0 +1,666 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>touchView js</title>
+    <style type="text/css">
+        * {padding:0;margin:0;}
+        ul, li{list-style:none;}
+        /*
+            .clearfix
+            :after
+        */
+        .clearfix {clear:both;}
+        .touch_view {}
+        .touch_view nav {overflow:hidden;background-color:rgb(243, 243, 243);color:rgb(81, 81, 81);font-weight:bold;}
+        /*.touch_view nav:after {content:'',display:block;clear:both;}*/
+        .touch_view nav ul {}
+        .touch_view nav ul li {float:left;width:25%;height:40px;line-height:40px;text-align:center;}
+        .touch_view nav ul li>div {display:inline-block;position:relative;}
+        .touch_view nav ul li>div>span {}
+        .touch_view nav ul li>div>div.nav_hint {position:absolute;bottom:1px;height:2px;width:100%;}
+        .touch_view nav ul li.current {color:rgb(186, 38, 54);}
+        .touch_view nav ul li.current>div>div.nav_hint {background-color:rgb(186, 38, 54);}
+
+        .touch_view section {overflow:hidden;}
+        .touch_view section ul {}
+        .touch_view section ul li {float:left;height:220px;}
+        .touch_view section ul li:nth-child(2n) {background-color:red;}
+        .touch_view section ul li:nth-child(2n+1) {background-color:green;}
+    </style>
+</head>
+<body>
+    <article class="touch_view">
+        <!-- nav>ul>(li>div>span{标题$}+div.nav_hint)*4 -->
+        <nav>
+            <ul>
+                <!-- li.current>div>span{标题}+div.nav_hint -->
+                <li class="current" data-nid="1">
+                    <div>
+                        <span>标题1</span>
+                        <div class="nav_hint"></div>
+                    </div>
+                </li>
+                <!-- (li>div>span{标题}+div.nav_hint)*3 -->
+                <li data-nid="2">
+                    <div>
+                        <span>标题2</span>
+                        <div class="nav_hint"></div>
+                    </div>
+                </li>
+                <li data-nid="3">
+                    <div>
+                        <span>标题3</span>
+                        <div class="nav_hint"></div>
+                    </div>
+                </li>
+                <li data-nid="4">
+                    <div>
+                        <span>标题4</span>
+                        <div class="nav_hint"></div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- /导航 -->
+        <!-- section.clearfix>ul>(li>ul.page[data-page=$])*4 -->
+        <!-- section.clearfix>ul>(li>div.page[data-page=$]{视图$})*4 -->
+        <section class="clearfix">
+            <ul>
+                <li data-sid="1">
+                    <div class="page" data-page="1">视图1</div>
+                </li>
+                <li data-sid="2">
+                    <div class="page" data-page="2">视图2</div>
+                </li>
+                <li data-sid="3">
+                    <div class="page" data-page="3">视图3</div>
+                </li>
+                <li data-sid="4">
+                    <div class="page" data-page="4">视图4</div>
+                </li>
+            </ul>
+        </section>
+        </section>
+        <!-- /视图区域 -->
+    </article>
+    <!-- /一组内容 -->
+<div id="styleOutput" style="outline: 1px dashed red; margin:20px auto;"></div>
+<input type="button" value="获取translate样式" id="styleBtn">
+<!--
+/share/mobile/touchViewJs2.html
+<script type="text/javascript" src="/javascripts/jquery-1.7.1.js"></script>
+-->
+<script type="text/javascript" src="http://zhwq.github.io/zhng/javascripts/jquery-1.7.1.js"></script>
+<script type="text/javascript">
+    ;(function () {
+        window.JUI = {};
+        //var JUI = {};
+        var dummyStyle = document.createElement('div').style;
+        var hasTouch = 'ontouchstart' in window;
+        var has3d = 'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix();
+        var vendor = (function () {
+            var 
+                vendors = 't,webkitT,MozT,msT,OT'.split(','),
+                t,
+                i,
+                l;
+            for (i = 0, l = vendors.length; i < l; i++) {
+                t = vendors[i];
+                if (t + 'ransform' in dummyStyle) {
+                    //直接返回 跳出循环
+                    return t.substr(0, t.length -1);
+                }
+            }            
+            // 如果不在检测之列 则置为不支持
+            return false;
+        })();
+        var cssVendor = vendor ? '-' + vendor.toLowerCase() + '-' : '';
+        // 拼接函数
+        function prefixStyle (style) {
+            if ( vendor === '' ) return style;
+
+            style = style.charAt(0).toUpperCase() + style.substr(1);
+            return vendor + style;
+        }
+        // 样式属性
+        var transform = prefixStyle('transform');
+        //var transitionProperty = prefixStyle('transitionProperty');
+        var transitionDuration = prefixStyle('transitionDuration');
+        // var transformOrigin = prefixStyle('transformOrigin');
+        // var transitionTimingFunction = prefixStyle('transitionTimingFunction');
+        var transitionDelay = prefixStyle('transitionDelay');
+
+        // 3d变换?
+        var perspective = prefixStyle('perspective');
+        var transformStyle = prefixStyle('transformStyle');
+
+        // has3d = prefixStyle('perspective') in dummyStyle;
+        var hasTransform = vendor !== false;
+        var hasTransitionEnd = prefixStyle('transition') in dummyStyle;
+
+        // 事件名
+        var RESIZE_EV = 'onorientationchange' in window ? 'orientationchange' : 'resize';
+        var START_EV = hasTouch ? 'touchstart' : 'mousedown';
+        var MOVE_EV = hasTouch ? 'touchmove' : 'mousemove';
+        var END_EV = hasTouch ? 'touchend' : 'mouseup';
+        var CANCEL_EV = hasTouch ? 'touchcancel' : 'mouseup';
+        var TRNEND_EV = (function () {
+            if ( vendor === false ) return false;
+            // 映射
+            var transitionEnd = {
+                    ''          : 'transitionend',
+                    'webkit'    : 'webkitTransitionEnd',
+                    'Moz'       : 'transitionend',
+                    'O'         : 'otransitionend',
+                    'ms'        : 'MSTransitionEnd'
+                };
+
+            return transitionEnd[vendor];
+        })();
+
+        // 方便统一取值
+        // transform: translate(x, y) translateZ(0)
+        translateZ = has3d ? ' translateZ(0)' : '';
+        ///////////////////////////////////////////
+        JUI.slide = function (el, options) {
+            var that = this;
+            var i;
+            that.wrapper = el;
+            that.slider = that.wrapper.children[0];
+            that.wrapper.style.overflow = 'hidden';
+
+            // 默认配置
+            that.options = {
+                // 可以标识
+                enabled: true,
+                autoInit: true,
+                autoSize: true,
+                // 横向滑动
+                lockDirection: true,
+                // 非loop下在首尾端滑动时反弹
+                bounce: true,
+                bounceLock: false,
+                // slide像高度是否一致
+                // 设置为true后 设置slide的overflow:hidden
+                // 同时需要相应更新对应slide片的高
+                varyHeight: false,
+                // 循环显示效果 在首尾复制尾页
+                // 当前第1页时 向左滑 显示真实最有一页
+                // 当前最有1页是 向右滑 实现第一页内容
+                loop: true,
+                //loop: false,
+
+                // page: this.slider.children.length,
+
+                //滑动容器 滑动项的宽
+                // px值 非百分比
+                wrapperW: null,
+                sliderW: null,
+                // slide数目
+                pageNum: that.slider.children.length,
+                //阀值 正数
+                threshold: 50,
+
+                // 事件接口
+                // onRefresh: null,
+                onBeforeSlideStart: function (e) { e.preventDefault(); },
+                onSlideStart: null,
+                onBeforeSlideMove: null,
+                onSlideMove: null,
+
+                onSliding: null,
+
+                onBeforeSlideEnd: null,
+               
+                onSlideEnd: null,
+                // function (event, currentPage, prevPage) {}
+                onTouchEnd: null,
+
+                onDestroy: null,
+                onInit: null
+            };
+            // 拷贝更新配置
+            for (i in options) {
+                that.options[i] = options[i];
+            }
+            // 阀值取绝对值
+            that.options.threshold = Math.abs(that.options.threshold);
+            // 自动初始化
+            if (that.options.autoInit) {
+                that.refresh();                
+            }
+            // 如果滑动项高度参差 则溢出隐藏
+            if (that.options.varyHeight) {
+                that.slider.style.overflow = 'hidden';
+            }
+            // 事件链开始点
+            that._bind(RESIZE_EV, window);
+            that._bind(START_EV);
+        };
+        JUI.slide.prototype = {
+            // translateX
+            offsetX: 0,
+            // 上次页码
+            prePage: -1,
+            // 当前页码
+            currentPage: -1,
+            // x方向增量
+            deltaX: 0,
+            // y方向增量
+            deltaY: 0,
+            // 点击处坐标x值
+            pointX: -1,
+            // 点击处坐标y值
+            pointY: -1,
+            distX: 0,
+            distY: 0,
+            absDistX: 0,
+            absDistY: 0,
+            // 临时 translateX
+            newX: 0,
+            // 移动标识
+            // false, 'left', 'right'
+            moved: false,
+            // 滑片内层容器宽 数字
+            wrapperW: null,
+            // 滑片宽
+            sliderW: null,
+            // 最大滑动距离
+            // 负值
+            maxScrollX: null,
+            handleEvent: function (e) {
+                var t = this;
+                switch (e.type) {
+                    case START_EV:
+                        if (!hasTouch && e.button !== 0) return;
+                        t._start(e);
+                        break;
+                    case MOVE_EV:
+                        t._move(e);
+                        break;
+                    case END_EV:
+                        // fall through
+                    case CANCEL_EV:
+                        t._end(e);
+                        break;
+                    case RESIZE_EV:
+                        t._resize(e);
+                        break;
+                    case TRNEND_EV:
+                        t._transitionEnd(e);
+                        break;
+                }
+            },
+            refresh: function () {
+                var that = this,
+                    s,
+                    sc,
+                    // 取别名 缩短获取值时的寻址路径
+                    options = that.options,
+                    i = 0,
+                    len;
+                // 第一页
+                that.offsetX = that.prePage = that.currentPage = 0;
+                that.wrapperW = options.wrapperW ?
+                                    options.wrapperW :
+                                    that.wrapper.clientWidth ?
+                                        that.wrapper.clientWidth : screen.width;
+                that.sliderW = options.sliderW ?
+                                    options.sliderW : that.wrapperW * options.pageNum;
+
+                s = that.slider;
+                sc = s.children;
+                sc[0].style[perspective] = sc[sc.length - 1].style[perspective] = '1000';
+                if (options.autoSize) {
+                    s.style.width = that.wrapperW * options.pageNum + 'px';
+                    for ( len = sc.length; i < len; i++) {
+                        sc[i].style.width = that.wrapperW + 'px';    
+                    }
+                }                    
+                // 最大滑动距离负值
+                that.maxScrollX = that.wrapperW - that.sliderW;
+                // 如果循环
+                // 拷贝最后一个slide
+                // 并在最前、最后插入
+                // 页码+2
+                // 同时设置滑片的宽
+                if (options.loop) {
+                    var tmp//,
+                        // newPageNum,
+                        ;
+                    // 往s下的第一片前插入最后一片
+                    tmp = sc[sc.length -1].cloneNode(true);
+                    //tmp.setAttribute('data-sid', null);
+                    tmp.removeAttribute('data-sid');
+                    // tmp.id = null;
+                    tmp.style[perspective] = '1000';
+                    tmp.style['width'] = that.wrapperW + 'px';
+                    s.insertBefore(tmp, sc[0]);
+                    // 往s下的最后一片后插入第一片
+                    // s把原始第一片追加到最后
+                    // sc保持与dom联系
+                    // 原始第一片现在的坐标为1
+                    tmp = sc[1].cloneNode(true);
+                    //tmp.setAttribute('data-sid', null);
+                    tmp.removeAttribute('data-sid');
+                    // tmp.id = null;
+                    tmp.style[perspective] = '1000';
+                    tmp.style['width'] = that.wrapperW + 'px';
+                    s.appendChild(tmp);
+                    ///////////////////////////////
+                    // newPageNum = options.pageNum + 2;
+                    if (options.autoSize) {
+                        // s.style.width = newPageNum * that.wrapperW + 'px';
+                        s.style.width = (options.pageNum + 2) * that.wrapperW + 'px';
+                        // for (; i < newPageNum; i++) {
+                        //     sc[i].style.width = that.wrapperW + 'px';
+                        // }
+                    }
+                    ///////////////////////////////
+                    that.deltaX = 0;
+                    that.offsetX = - that.wrapperW;
+                    // 显示真实第一帧
+                    that._pos(that.offsetX);
+                }
+                if (options.varyHeight) {
+                    // for (i = 0, len = sc.length; i < len; i++) {
+                    //     sc[i].style[perspective] = '1000';
+                    // }
+                    that.adjustHeight();
+                }
+                if (options.onInit) {
+                    options.onInit.call(that);
+                }
+            },
+            // 简单版
+            // 在最后一页往后翻
+            // 在最前一页往前翻
+            // 过渡完整后需要调整translateX的值
+            slideToPage: function (index, time, isTriggerEnd) {
+                var that = this,
+                    index = parseInt(index, 10),
+                    options = that.options;
+                if (that.currentPage === index) return;
+                that.prePage = that.currentPage;
+                that.currentPage = index;
+                that.offsetX = - (options.loop ? index + 1 : index) * that.wrapperW;
+                that._pos(that.offsetX, time);
+                if (isTriggerEnd && options.onTouchEnd) {
+                    options.onTouchEnd.call(that, null, that.currentPage, that.prePage);
+                }
+                if (options.varyHeight && time) {
+                    setTimeout(function () {
+                        that.adjustHeight();
+                    }, 1000 * time);
+                }
+            },
+            // 根据当前滑片的高度设置slider的高度
+            adjustHeight: function () {
+                var elem = this.slider.children[(this.options.loop ? 1 : 0) + this.currentPage];
+                if (elem) {
+                    // getComputedStyle值 形如'200px'
+                    // 不支持ie
+                    this.slider.style.height = getComputedStyle(elem, null)['height'];
+                }
+            },
+            disable: function () {
+
+            },
+            enable: function () {
+
+            },
+            _start: function (e) {
+                var that = this,
+                    point = hasTouch ? e.touches[0] : e,
+                    matrix,
+                    x;
+                if (!that.options.enabled) return;
+                if (that.options.onBeforeSlideStart) {
+                    that.options.onBeforeSlideStart.call(that, e);
+                }
+                // 初始状态参数
+                that.distX = 0;
+                that.distY = 0;
+                that.absDistX = 0;
+                that.absDistY = 0;
+
+                // 坐标
+                that.pointX = point.pageX;
+                that.pointY = point.pageY;
+
+                that.lockDirection = false; // ?
+
+                if (that.options.onSlideStart) {
+                    that.options.onSlideStart.call(that, e);
+                }
+
+                // 初始化绑定
+                // that._bind(MOVE_EV, window);?
+                that._bind(MOVE_EV);
+                that._bind(END_EV);
+                that._bind(CANCEL_EV);
+            },
+            // 滑动过渡
+            _move: function (e) {
+                var
+                    that = this,
+                    newX,
+                    deltaX,
+                    point = hasTouch ? e.touches[0] : e,
+                    pointX = point.pageX,
+                    pointY = point.pageY,
+                    options = that.options;
+                deltaX = that.deltaX = pointX - that.pointX;
+                that.deltaY = pointY - that.pointY;
+                that.absDistX = Math.abs(that.deltaX);
+                that.absDistY = Math.abs(that.deltaY);
+
+                //////////////////////////////////
+                // 锁定方向
+                //////////////////////////////////
+                newX = that.offsetX + that.deltaX;
+                // 反弹在未循环时
+                // 在首页 右滑 欲显示左侧没有的内容
+                // 在尾页 左滑 欲显示右侧没有的内容
+                if (!options.loop &&
+                    (
+                        (deltaX > 0 && that.currentPage === 0) ||
+                        (newX < that.maxScrollX && that.currentPage === options.pageNum - 1)
+                    )
+                ) {
+                    newX = options.bounce ? newX + (deltaX / 2) : newX >= 0 || that.maxScrollX >= 0  ? 0 : that.maxScrollX;
+                }
+                that._pos(newX);
+            },
+            // 更新最终状态
+            _end: function (e) {
+                // 不处理多点触碰
+                // 多点触碰下 之前是处理第一个
+                if (hasTouch && e.touches.length !== 0) return;
+                var
+                    that = this,
+                    point = hasTouch ? e.touches[0] : e,
+                    options = that.options;
+                
+
+                /////////////////////////////////
+                that._unbind(MOVE_EV);
+                that._unbind(END_EV);
+                that._unbind(CANCEL_EV);
+                /////////////////////////////////
+                that._bind(TRNEND_EV);
+
+                e.moved = false;
+                that.prePage = that.currentPage;
+                ///////////////////////////////////
+                if (that.deltaX < -50) {
+                    that.deltaX = 0;
+                    if (++that.currentPage === options.pageNum) {
+                        if (options.loop) { // 此时显示的是最后一页
+                            that.currentPage = 0;
+                            that.offsetX -= that.wrapperW; // 过渡显示 tmp 第一页
+                            //////////////////////////////////
+                            that.endCallback = function () {
+                                // 显示页修正
+                                that._unbind(TRNEND_EV);
+                                that.offsetX = -that.wrapperW;
+                                that._pos(that.offsetX);
+                            };
+                            //////////////////////////////////
+                            that._pos(that.offsetX, .4);
+                            e.moved = 'left'; // TODO: event moved有什么用
+                        } else {
+                            // 什么时候进入?
+                            that.currentPage--;
+                            that._pos(that.offsetX, .4);
+                        }
+                    } else {
+                        // 当前显示的不是最后一页
+                        // 往后翻
+                        that.offsetX -= that.wrapperW;
+                        that._pos(that.offsetX, .4);
+                        // 内容向左移动
+                        e.moved = 'left';
+                    }
+                } else {
+                    if (that.deltaX > 50) {
+                        that.deltaX = 0;
+                        if (--that.currentPage == -1) {
+                            // 当前显示的是第一页
+                            if (options.loop) {
+                                that.currentPage = options.pageNum - 1;
+                                that.offsetX += that.wrapperW;
+                                //////////////////////////////
+                                that.endCallback = function () {
+                                    that._unbind(TRNEND_EV);
+                                    that.offsetX = -that.wrapperW * options.pageNum;
+                                    that._pos(that.offsetX);
+                                }
+                                //////////////////////////////
+                                that._pos(that.offsetX, .4);
+                                e.moved = 'right';
+                            } else {
+                                that.currentPage++;
+                                that._pos(that.offsetX, .4);
+                            }
+                        } else {
+                            that.offsetX += that.wrapperW;
+                            that._pos(that.offsetX, .4);
+                            e.moved = 'right';
+                        }
+                    } else {
+                        that._pos(that.offsetX, .4);
+                    }
+                }
+                ///////////////////////////////////
+                if (options.onTouchEnd) {
+                    options.onTouchEnd.call(that, e, that.currentPage, that.prePage);
+                }
+            },
+            _resize: function (e) {
+                var
+                    that = this,
+                    s,
+                    sc,
+                    i,
+                    len,
+                    options = that.options;
+                // 获取初始化参数
+                that.wrapperW = options.wrapperW ?
+                                    options.wrapperW :
+                                    that.wrapper.clientWidth ?
+                                        that.wrapper.clientWidth : screen.width;
+                that.sliderW = options.sliderW ?
+                                    options.sliderW : that.wrapperW * options.pageNum;
+                that.maxScrollX = that.wrapperW - that.sliderW;
+                that.offsetX = -that.wrapperW * (options.loop ? that.currentPage + 1 : that.currentPage);
+                // 重置参数配置
+                // 在手动配置宽度时不适应
+                s = that.slider;
+                sc = s.children;
+                len = sc.length;
+                if (options.autoSize) {
+                    s.style.width = that.wrapperW * len + 'px';
+                    for (i = 0; i < len; i++) {
+                        sc[i].style.width = that.wrapperW  + 'px';
+                    }
+                }
+                ////////////////////////
+                that._pos(that.offsetX);
+                if (options.adjustHeight) {
+                    that.adjustHeight();
+                }
+            },
+            _transitionEnd: function (e) {
+                var
+                    that = this,
+                    options = that.options;
+                // 状态修正
+                if (that.endCallback) {
+                    that.endCallback();
+                    that.endCallback = null;
+                }
+                if (options.varyHeight) {
+                    that.adjustHeight();
+                }
+                that._unbind(TRNEND_EV);
+            },
+            // 设置滑动容器的位置及变更时长
+            _pos: function(x, time) {
+                if (!this.options.enabled) return;
+                time = time ? time : 0;
+                this.slider.style[transitionDuration] = time + 's';
+                this.slider.style[transform] = 'translate(' + x + 'px,0px)' + translateZ;
+                if (this.options.onSliding) {
+                    this.options.onSliding.call(this, this.deltaX);
+                }
+            },
+            _bind: function (type, el, bubble) {
+                (el || this.slider).addEventListener(type, this, !!bubble);
+            },
+            _unbind: function (type, el, bubble) {
+                (el || this.slider).removeEventListener(type, this, !!bubble);
+            }
+        };
+        // 规避内存释放问题
+        dummyStyle = null;
+    })();
+    ///////////////////////////
+    // slideIndex
+    // var _touchView = document.querySelector('article.touch_view');
+    var _navHolder = document.querySelector('article.touch_view>nav>ul')
+    var _sliderHolder = document.querySelector('article.touch_view>section');
+    var slideObj = new JUI.slide(_sliderHolder, {
+        // 定制内容加载
+        // 滑动搞到特定页
+        onTouchEnd: slideEndHandler
+    });
+    function slideEndHandler(e, currentPage, prePage) {
+        if (currentPage === prePage) return;
+        var $lis = $('article.touch_view>nav>ul>li');
+        $lis.eq(currentPage).attr('class', 'current').siblings('.current').removeClass('current');
+    }
+    _navHolder.onclick = function (e) {
+        var t = e.target;
+        // while(t.nodeType === 3) t = t.parentNode;
+        while(t.nodeName !== 'LI') t = t.parentNode;
+        if (t.className === 'current') return;
+        ///////////////////////////////////////////
+        var $t = $(t);
+        var index = $t.index();// + 1;TODO:
+        $t.siblings('.current').removeClass('current');
+        $t.attr('class', 'current');
+        slideObj.slideToPage(index, .5); // 0.5s
+    };
+////////////////////////////////////////////////
+// touch
+// drag & drop 事件模拟
+$('#styleBtn').click(function () {
+    $('#styleOutput').append($('<p />').html(slideObj.deltaX));
+    $('#styleOutput').append($('<p />').html(slideObj.offsetX));
+    $('#styleOutput').append($('<p />').html(slideObj.slider.style.cssText));
+});
+</script>
+</body>
+</html>
