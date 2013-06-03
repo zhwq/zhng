@@ -102,6 +102,10 @@
 -->
 <script type="text/javascript" src="http://zhwq.github.io/zhng/javascripts/jquery-1.7.1.js"></script>
 <script type="text/javascript">
+/*!
+* touchView插件
+* 综合iscroll,3g.163/touch频道, 工作台数据客户端数据加载
+*/
     ;(function () {
         window.JUI = {};
         //var JUI = {};
@@ -109,7 +113,7 @@
         var hasTouch = 'ontouchstart' in window;
         var has3d = 'WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix();
         var vendor = (function () {
-            var 
+            var
                 vendors = 't,webkitT,MozT,msT,OT'.split(','),
                 t,
                 i,
@@ -120,7 +124,7 @@
                     //直接返回 跳出循环
                     return t.substr(0, t.length -1);
                 }
-            }            
+            }
             // 如果不在检测之列 则置为不支持
             return false;
         })();
@@ -221,7 +225,7 @@
                 onSliding: null,
 
                 onBeforeSlideEnd: null,
-               
+
                 onSlideEnd: null,
                 // function (event, currentPage, prevPage) {}
                 onTouchEnd: null,
@@ -237,7 +241,7 @@
             that.options.threshold = Math.abs(that.options.threshold);
             // 自动初始化
             if (that.options.autoInit) {
-                that.refresh();                
+                that.refresh();
             }
             // 如果滑动项高度参差 则溢出隐藏
             if (that.options.varyHeight) {
@@ -324,9 +328,9 @@
                 if (options.autoSize) {
                     s.style.width = that.wrapperW * options.pageNum + 'px';
                     for ( len = sc.length; i < len; i++) {
-                        sc[i].style.width = that.wrapperW + 'px';    
+                        sc[i].style.width = that.wrapperW + 'px';
                     }
-                }                    
+                }
                 // 最大滑动距离负值
                 that.maxScrollX = that.wrapperW - that.sliderW;
                 // 如果循环
@@ -491,7 +495,7 @@
                     that = this,
                     point = hasTouch ? e.touches[0] : e,
                     options = that.options;
-                
+
 
                 /////////////////////////////////
                 that._unbind(MOVE_EV);

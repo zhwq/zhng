@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>common css questions:: https://developer.mozilla.org/en-US/docs/Web/CSS/Common_CSS_Questions?redirectlocale=en-US&redirectslug=CSS%2FCommon_CSS_Questions</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <style type="text/css">
+        /*   use of a shorthand property          */
+        #stockTicker { font-size: 12px; font-family: Verdana; font-weight: bold; }
+        .stockSymbol { font: 14px Arial; color: red; }
+        /*  be care 按名字匹配所有?*/
+        body * { font-weight: normal; }
+
+        .corpName { font-weight: bold; }
+        .stockUp { color: red; }
+    </style>
+</head>
+<body>
+<div id="stockTicker">
+   NYS: <span class="stockSymbol">GE</span> +1.0 ...
+</div>
+
+<div id="section">
+   NYS: <span class="corpName"><span class="stockUp">GE</span></span> +1.0 ...
+</div>
+</body>
+</html>

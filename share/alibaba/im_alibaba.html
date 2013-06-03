@@ -1,0 +1,104 @@
+<html>
+<head>
+    <title>im alibaba:: v1</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <link rel="stlesheet" href="stylesheets/util.css" />
+    <style type="text/css">
+        /*reset*/
+        html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,
+        a,abbr,acronym,address,code,del,dfn,em,img,q,dl,dt,dd,ol,ul,li,
+        firldset,form,label,legend,
+        table,caption,tbody,tfoot,thead,tr,th,td,
+        article,aside,dialog,figure,footer,header,hgroup,nav,section{
+            margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline
+        }
+        /*div {outline: 1px dashed red;}*/
+        /*? hasLayout BFC */
+        .util-clearfix, .clearfix {zoom: 1;}
+        ul {list-style: disc;}
+        li {display: list-item;}
+        b, strong {font-weight: 700;}
+        a:link {color: #06c;text-decoration: none;}
+        a:visited {color: #06c;text-decoration: none;}
+        /*水平居中*/
+        .page {width: 990px;margin: 0 auto;}
+        .ui-header {position: relative;z-index: 100;margin: 0 auto;line-height: 15px;text-align: left;}
+        .ui-beacon {display: block;height: 29px;border-bottom: 1px solid #DDDDDD;}
+        .ui-beacon .ui-beacon-user {float: left;padding-top: 7px;}
+        .ui-beacon-user a, .ui-beacon-user a:visited {}
+        .ui-beacon-main {position: relative;_z-index: 1;_zoom: 1;float: right;}
+        .ui-beacon-item {position: relative;float: left;z-index: 1;list-style: none;
+            height: 29px;margin: 0;margin-left: -1px;padding: 0 1px;
+            background: url('img/header.png') no-repeat right -122px;
+        }
+        .ui-beacon-item-link {z-index: -1;float: left;position: relative;display: inline;height: 15px;_height:auto;margin: 2px 0;padding: 4px 9px;border: 1px solid #FFFFFF;border-bottom: none;background-color: #FFFFFF;
+        }
+        .ui-beacon-arrow {display: inline-block;height: 0;line-height: 0;width: 0;border-width: 4px;border-style: dashed;border-color: transparent;vertical-align: middle;}
+        .ui-beacon-arrow-down {border-top-style: solid; border-top-color: #333333;}
+        .ui-beacon-subs {display: none;position: absolute;top: 26px; left: 0;z-index: 2;margin-top: -1px;border: 1px solid #DDDDDD; padding: 4px 0 6px; background-color: #FFFFFF;
+        }
+        .ui-beacon-sub {list-style: none;margin: 0;}
+        .ui-beacon-subs a {display: block;border: 0;height: 22px;line-height: 20px;padding: 0 10px;background-color: #FFFFFF;min-width: 100px;white-space: nowrap!important;}
+        .ui-beacon-drop-hover, .ui-beacon-drop:hover {padding: 0;z-index: 2;}
+        .ui-beacon-drop-hover .ui-beacon-subs, .ui-beacon-drop:hover .ui-beacon-subs {display: block;}
+        .ui-beacon-drop-hover .ui-beacon-item-link, .ui-beacon-drop:hover .ui-beacon-item-link {padding: 4px 10px;border-color: #CCCCCC;color: #f90!important;z-index: 3;
+        }
+    </style>
+</head>
+<body>
+<div class="homepage-box">
+    <div class="page clearfix">
+        <header class="util-clearfix ui-header">
+            <div id="mod-beacon" class="util-clearfix ui-beacon">
+                <div class="ui-beacon-user">
+                    Welcom to alibaba.com,
+                    <a href="javascript:;">
+                        <strong>Join Free</strong>
+                    </a>
+                    |
+                    <a href="javascript:;">Sign In</a>
+                </div>
+                <!-- / 用户信息 -->
+                <ul class="ui-beacon-main">
+                    <li class="ui-beacon-item ui-beacon-drop">
+                        <a href="javascript:;" class="ui-beacon-item-link">
+                            Buy
+                            <span class="ui-beacon-arrow ui-beacon-arrow-down"></span>
+                        </a>
+                        <ul class="ui-beacon-subs">
+                            <li class="ui-beacon-sub">
+                                <a href="javascript:;">How to Buy</a>
+                            </li>
+                            <li class="ui-beacon-sub">
+                                <a href="javascript:;">Post buying Requests</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="ui-beacon-item ui-beacon-drop">
+                        <a href="javascript:;" class="ui-beacon-item-link">
+                            Sell
+                            <span class="ui-beacon-arrow ui-beacon-arrow-down"></span>
+                        </a>
+                        <ul class="ui-beacon-subs">
+                            <li class="ui-beacon-sub">
+                                <a href="javascript:;">How to Buy</a>
+                            </li>
+                            <li class="ui-beacon-sub">
+                                <a href="javascript:;">Post buying Requests</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- / -->
+            </div>
+            <!-- / .mod-beacon  -->
+        </header>
+        <!-- /
+            ui-header
+        -->
+    </div>
+    <!-- / .page -->
+</div>
+<!-- / .homepage-box -->
+</body>
+</html>

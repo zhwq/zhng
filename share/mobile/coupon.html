@@ -1,0 +1,201 @@
+<!doctype html>
+<html><!--  manifest="./cache.manifest" -->
+<head>
+    <meta charset="UTF-8">
+    <title>“码”上做极客</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"  />
+    <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" type="text/css" href="http://hd.cityvs.com/act/lottery/css/1.css"/>
+    <link rel="stylesheet" href="http://hd.cityvs.com/act/lottery/css/jquery.mobile-1.3.1.min.css" />
+    <style type="text/css">
+        .cp-warn {padding-left:30px;height: 30px;line-height: 26px;color: red;}
+        .cp-warn a {text-align: underline;color: blue;}
+    </style>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+<script type="text/javascript">
+    var hasTouch = 'ontouchstart' in window;
+    var canvas;
+    var ctx;
+    var color = "#fff";
+    var lines = [];
+    var points = [];
+    $(document).ready(function () {
+        var offset = $("#myCanvas").offset();
+        var canvas_left = offset.left;
+        var canvas_top = offset.top;
+        canvas = document.getElementById('myCanvas');
+        ctx = canvas.getContext('2d');
+        ctx.fillStyle = "#999";
+        ctx.fillRect(0, 0, 180, 80);
+        //移动
+        var START_EV = hasTouch ? 'touchstart' : 'mousedown';
+        var MOVE_EV = hasTouch ? 'touchmove' : 'mousemove';
+        var END_EV = hasTouch ? 'touchend' : 'mouseup';
+        document.getElementById("myCanvas").addEventListener(START_EV, touchCheck, false);
+        document.getElementById("myCanvas").addEventListener(MOVE_EV, touchCheck, false);
+        document.getElementById("myCanvas").addEventListener(END_EV, touchCheck, false);
+
+        var startTouch;
+        var isDrag = false;
+        var lastPoint;
+        function touchCheck(evt) {
+            evt.preventDefault();
+            var touchX;
+            var touchY;
+            if (hasTouch) {
+                if (evt.touches.length > 0) {
+                    touchX = evt.touches[0].pageX - canvas_left;
+                    touchY = evt.touches[0].pageY - canvas_top;
+                }
+                else {
+                    if (lastPoint) {
+                        touchX = lastPoint.x;
+                        touchY = lastPoint.y;
+                    }
+                }
+            }
+            else {
+                touchX = evt.pageX - canvas_left;
+                touchY = evt.pageY - canvas_top;
+            }
+
+            switch (evt.type) {
+                case START_EV:
+                    DrawLine();
+                    points = [];
+                    points.push({ x: touchX, y: touchY });
+                    isDrag = true;
+                    lastPoint = { x: touchX, y: touchY };
+                    break;
+
+                case MOVE_EV:
+                    if (isDrag) {
+                        points.push({ x: touchX, y: touchY });
+                        lastPoint = { x: touchX, y: touchY };
+                        DrawLine();
+                    }
+                    break;
+                case END_EV:
+
+                    isDrag = false;
+
+                    if (points.length > 0) {
+
+                        points.push({ x: touchX, y: touchY });
+
+                        lines.push(points);
+
+                        DrawLine();
+
+                    }
+
+                    break;
+
+            }
+
+        }
+
+        function DrawSingleLine(ctx, line) {
+            for (var j = 0; j < line.length; j++) {
+                var point = line[j];
+                if (j == 0)
+                    ctx.moveTo(point.x, point.y);
+                else
+                    ctx.lineTo(point.x, point.y);
+            }
+        }
+
+        function DrawLine() {
+            ctx.clearRect(0, 0, 80, 17);
+            ctx.globalCompositeOperation = "source-over";
+            ctx.fillStyle = "#999";
+            /*
+            var img = new Image();
+            img.src = "images/luck.png";
+            ctx.drawImage(img, 0, 0);*/
+            ctx.fillRect(0, 0, 80, 17);
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            var tempLines = lines;
+            if (tempLines.length == 0) {
+                tempLines.push(points);
+            }
+
+            for (var i = 0; i < tempLines.length; i++) {
+                var line = tempLines[i];
+                DrawSingleLine(ctx, line);
+            }
+
+            if (isDrag && points.length > 0)
+                DrawSingleLine(ctx, points);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+    });
+    $(document).ready(function(){
+        $("#key").click(function(){
+            $("#myCanvas").hide();
+
+        })
+    })
+
+    $(document).ready(function(){
+        $("#share").click(function(){
+            //alert("aaaa");
+            $.post(
+                "http://hd.cityvs.com/act/share/weibo_sina/weibo_ajax.php",
+                {
+                    text:"刚参加了海昌刮刮奖活动，你也来参加吧，轻松赢门票哦！！http://hd.cityvs.com/act/lottery/index.php/site/index",
+                },function(data){
+                    if(data == "OK"){
+                        alert("你已经成功分享该应用");
+                    }else{
+                        alert("分享失败");
+                    }
+                });
+        })
+    })
+
+    $(document).ready(function(){
+        $(".ui-btn-up-c").hide();
+    })
+</script>
+</head>
+<body>
+<p class="cp-warn">此效果来源：
+<a href="http://hd.cityvs.com/act/lottery/index.php/site/coupon" target="_blank">
+“码”上做极客-刮奖-幸运抽奖（http://hd.cityvs.com/act/lottery/index.php/site/coupon）
+</a>
+</p>
+<div data-role="page" data-theme="c" id="home" style="top:30px;">
+    <div data-role="content">
+        <h1>请将涂层刮开</h1>
+        <div class="header">
+        <div class="luck">
+            <em>武汉极地海洋世界门票立减20元</em>
+            <canvas id="myCanvas" class="myCanvas" width="180" height="80"
+                style="-moz-border-radius: 15px; -webkit-border-radius: 15px; border-radius:10px;" >Canvas</canvas>
+        </div>
+
+        <a href="#" data-role="button" data-theme="e" id="key">一键清除</a>
+        <p>请带上您的身份证到海昌武汉极地海洋世界领取奖品</p>
+        <p>领奖时间：2013年5月6日-31日</p>
+        <p>联系电话：027-85699999</p>
+        </div>
+        <a href="http://service.weibo.com/share/share.php?title=码上做极客  快把企鹅带回家 @海昌武汉极地海洋世界 点击链接http://hd.cityvs.com/act/lottery/index.php参与活动
+" data-role="button" data-theme="e" id="ccc">新浪微博</a>
+        <a href="http://share.v.t.qq.com/index.php?c=share&a=index&title=码上做极客  熊孩子们，免费的青岛游，快来吧 @海昌武汉极地海洋世界  点击链接http://hd.cityvs.com/act/lottery/index.php参与活动
+ " data-role="button" data-theme="e" id="ccc">腾讯微博</a>
+
+    </div>
+</div>
+</body>
+</html>
+

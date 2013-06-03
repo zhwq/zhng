@@ -1,0 +1,17 @@
+/*
+* collection of css utils
+* encoding: utf8;
+* url: stylesheets/util.css
+*/
+html{
+    margin:0;padding:0;border:0;background:#FFFFFF;
+    /*横竖屏字体变化*/
+    -webkit-text-size-adjust:100%;-ms-text-size-adjust:100%
+}
+.clearfix {}
+.clearfix:after {
+    overflow: hidden;
+    display: block;visibility: hidden;
+    height: 0;font-size: 0;
+    content: '\0020';
+}
