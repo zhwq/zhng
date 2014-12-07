@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>idc</title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="css/normalize.css"/>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/ucom.css"/>
+    <link rel="stylesheet" href="css/flexslider.css"/>
+    <link rel="stylesheet" href="css/idc.css"/>
+</head>
+<body>
+<div class="site-main">
+    <div class="topbar">
+        <div class="wh topbar-main">
+            <div class="top-tel">服务热线：0000 -000 -000</div>
+            <!--<iframe width="500px" height="30px"
+                    frameborder="0" class="vt" id="inside-app-iframe"
+                    name="inside-app-iframe"
+                    src="https://account.ucloud.cn/cas/status"></iframe>-->
+        </div>
+    </div>
+    <!-- / 顶部 热线、登录、注册栏 -->
+    <div class="top">
+        <a class="left" href="/">
+            <span class="logo"></span>
+            <span class="solgan f12">数据智能化</span>
+        </a>
+        <ul class="menu right">
+            <li class="nav nav-index active">
+                <a href="#index">首页</a>
+            </li>
+            <li class="nav nav-product">
+                <a href="#product">产品</a>
+            </li>
+            <li class="nav nav-service">
+                <a href="#service">服务</a>
+            </li>
+            <li class="nav nav-solu">
+                <a href="#solu">行业解决方案</a>
+            </li>
+            <li class="nav nav-app">
+                <a href="#app">
+                    行业应用
+                </a>
+            </li>
+            <li class="nav nav-about">
+                <a href="#about">
+                    关于我们
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- / 导航栏 -->
+    <div class="ad">
+        <section class="slider flex-container">
+            <div class="flexslider flex-container">
+                <ul class="slides">
+                    <li>
+                        <img src="www/img/ucloud-ad-uddp.jpg"/>
+                    </li>
+                    <li>
+                        <img src="www/img/ucloud-ssd-banner.jpg"/>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+    <div class="main-contents" style="margin-top: 10px;">
+        <div id="index" class="page-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="thumbnail">
+                            iMammoth
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="thumbnail">
+                            电子商务交易平台
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="product" class="page-content">
+            <div class="container">
+                <div class="row">
+                    spa/page 产品
+                </div>
+            </div>
+        </div>
+        <!--/ spa/page 产品 -->
+        <div id="service" class="page-content">
+            <div class="container">
+                <div class="row">
+                    spa/page 服务
+                </div>
+            </div>
+        </div>
+        <!--/ spa/page 服务 -->
+        <div id="solu" class="page-content">
+            <div class="container">
+                <div class="row">
+                    spa/page 解决方案
+                </div>
+            </div>
+        </div>
+        <!--/ spa/page 解决方案 -->
+        <div id="app" class="page-content">
+            <div class="container">
+                <div class="row">
+                    spa/page 应用
+                </div>
+            </div>
+        </div>
+        <!--/ spa/page 解决方案 -->
+        <div id="about" class="page-content">
+            <div class="container">
+                <div class="row">
+                    spa/page 关于我们
+                </div>
+            </div>
+        </div>
+        <!--/ spa/page 解决方案 -->
+    </div>
+    <div class="footer navbar-fixed-bottom">
+        <div class="files">
+            <div class="icp-b">
+                <i>
+                    <span class="vm">Copyright &copy; 2014 iDataCool 北京融智辉腾科技有限公司 ｜京ICP备 12345678</span>
+                    <a href="http://www.sgs.gov.cn/lz/licenseLink.do?method=licenceView&amp;entyId=12345678"
+                       target="_blank" class="pl5">
+                        <img src="img/gongshang-icon.png"></a></i>
+            </div>
+        </div>
+    </div>
+    <!-- / 版权信息 -->
+</div>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/jquery.flexslider.js"></script>
+<script src="js/routie.js"></script>
+<script>
+$(function () {
+    // 图片展示
+    $('.flexslider').flexslider({
+        animation: 'fade',
+        controlsContainer: '.flex-container',
+        itemWidth: '100%',
+        itemMargin: 0,
+        smoothHeight: true,
+        animationLoop: false,
+        controlNav: true,
+        directionNav: true,
+        pauseOnHover: true,
+        slideshowSpeed: 3000,
+        start: function(slider){
+        }
+    });
+    var ctab = "index";
+    function switchNav(contentTab) {
+        // tab
+        $('.active.nav-' + ctab).removeClass('active');
+        $('.nav-' + contentTab).addClass('active');
+
+        // content
+        $('.page-content').hide();
+        $('#' + contentTab).show();
+
+        ctab = contentTab;
+    }
+    // @FIXME: extra param
+    routie({
+        "index": function () {
+            // 1. 更新nav栏状态
+            // 2. 切换内容
+            // 3. 更新功能按钮栏状态
+            switchNav('index');
+        },
+        "product": function () {
+            switchNav('product');
+        },
+        "service": function () {
+            switchNav('service');
+        },
+        "solu": function () {
+            switchNav('solu');
+        },
+        "app": function () {
+            switchNav('app');
+        },
+        "about": function () {
+            switchNav('about');
+        }
+    });
+
+    routie('index');
+});
+</script>
+</body>
+</html>
