@@ -245,6 +245,7 @@ textarea {
     height: 45px;
     margin: 9px 0px 9px 100px;
     overflow: hidden;
+    background-image: url('../img/logo.png');
     background-repeat: no-repeat;
     vertical-align: top;
     display: inline-block;
