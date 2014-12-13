@@ -211,7 +211,7 @@ textarea {
 
 .site-main {
     height: 100%;
-    background: #fff;
+    /*background: #fff;*/
     -webkit-transition: -webkit-transform 150ms cubic-bezier(.2, .3, .25, .9);
     transition: transform 150ms cubic-bezier(.2, .3, .25, .9);
 }
@@ -470,7 +470,7 @@ textarea {
     background-color: rgba(145, 144, 144, 0.8);
 }
 ol.flex-control-nav {
-    width: 70px;
+    width: auto;
     margin: -30px auto 0;
     position: absolute;
     z-index: 999;
@@ -569,4 +569,11 @@ ol.flex-control-nav li a.flex-active {
 .main-contents .page-content {
     display: none;
     min-height: 200px;
+}
+
+.solu-h2 {
+    font-size: 18px;
+    color: #32365d;
+    border-left: 3px solid #4080d8;
+    padding-left: 10px;
 }

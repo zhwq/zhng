@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>tab horizontal</title>
+    <link rel="stylesheet" href="../css/normalize.css"/>
+    <link rel="stylesheet" href="../css/bootstrap.css"/>
+    <link rel="stylesheet" href="../css/bootstrap-theme.min.css"/>
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap.js"></script>
+</head>
+<body>
+<h2>tab, horizontal</h2>
+<ul id="tabs" class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#c1" id="tab-c1"
+           role="tab"
+           data-toggle="tab"
+           aria-controls="home"
+           aria-expanded="true">tab-c1</a>
+    </li>
+    <li class="">
+        <a href="#c2" id="tab-c2"
+           role="tab"
+           data-toggle="tab"
+           aria-controls="home"
+           aria-expanded="true">tab-c2</a>
+    </li>
+</ul>
+<div id="contents">
+    <div class="tab-pane fade"
+         role="tabpanel"
+         id="c1"
+         aria-labelledby="tab-c1">
+        <p>c1</p>
+    </div>
+    <div class="tab-pane fade"
+         role="tabpanel"
+         id="c2"
+         aria-labelledby="tab-c2">
+        <p>c2</p>
+    </div>
+</div>
+</body>
+</html>

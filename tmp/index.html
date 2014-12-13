@@ -9,10 +9,27 @@
     <link rel="stylesheet" href="css/flexslider.css"/>
     <link rel="stylesheet" href="css/idc.css"/>
     <link rel="icon" href="img/favicon.ico"/>
+    <style type="text/css">
+        span.solgan {display: none!important}
+        .idc-con-thumbs h3, .idc-con-thumbs p {
+            display: none;
+        }
+        .tab-pane .solu-h2:nth-child(1) {
+            margin-top: 0;
+        }
+        .page-content .nav-tabs > li > a {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            line-height: 24px;
+        }
+        .page-content .solu-h2 + ol li {
+            line-height: 1.618em;
+        }
+    </style>
 </head>
 <body>
 <div class="site-main">
-    <div class="topbar">
+    <div class="topbar hide"><!--/ 点击导航 滚动条有移动 -->
         <div class="wh topbar-main">
             <div class="top-tel">服务热线：0000 -000 -000</div>
             <!--<iframe width="500px" height="30px"
@@ -58,33 +75,41 @@
             <div class="flexslider flex-container">
                 <ul class="slides">
                     <li>
-                        <img src="www/img/ucloud-ad-uddp.jpg"/>
+                         <img src="www/img/idc-slide01.jpg"/>
                     </li>
                     <li>
-                        <img src="www/img/ucloud-ssd-banner.jpg"/>
+                         <img src="www/img/idc-slide02.jpg"/>
                     </li>
-		    <li>
-			<img src="www/img/idc-slide01.jpg"/>
-		    </li>
-		    <li>
-			<img src="www/img/idc-slide03.jpg"/>
-	   	    </li>	
+                    <li>
+                        <img src="www/img/idc-slide03.jpg"/>
+                    </li>
                 </ul>
             </div>
         </section>
     </div>
-    <div class="main-contents" style="margin-top: 10px;margin-bottom: 50px;">
+    <div class="main-contents" style="margin-top: 20px;margin-bottom: 20px;">
         <div id="index" class="page-content">
-            <div class="container">
+            <div class="container idc-con-thumbs">
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-xs-4">
                         <div class="thumbnail">
-                            iMammoth
+                            <img src="www/img/thumbs/01.jpg" />
+                            <h3>{{title}}</h3>
+                            <p>{{content}}</p>
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-xs-4">
                         <div class="thumbnail">
-                            电子商务交易平台
+                            <img src="www/img/thumbs/02.jpg" />
+                            <h3>{{title}}</h3>
+                            <p>{{content}}</p>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="thumbnail">
+                            <img src="www/img/thumbs/03.jpg" />
+                            <h3>{{title}}</h3>
+                            <p>{{content}}</p>
                         </div>
                     </div>
                 </div>
@@ -93,7 +118,93 @@
         <div id="product" class="page-content">
             <div class="container">
                 <div class="row">
-                    spa/page 产品
+                    <div class="col-xs-2 col-md-3">
+                        <ul class="nav nav-tabs nav-stacked" role="tablist">
+                            <li class="active" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#product-iMammoth"
+                                   aria-controls="product-iMammoth"
+                                   aria-expanded="true">
+                                    iMammoth
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#product-ebuy"
+                                   aria-controls="product-ebuy"
+                                   aria-expanded="false">
+                                    电子商务交易平台
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-10 col-md-9 tab-content" role="main">
+                        <div class="tab-pane active fade in" role="tabpanel" id="product-iMammoth">
+                            <h2 class="solu-h2">产品介绍</h2>
+                            <ol>
+                                <li>
+                                    iMammoth 作为基于业界主流Hadoop 计算框架之上开发的，为企业大数据分析人员和运维人员提供可管，可控，可运营，易操作的大数据MR 分析环境，为企业解决了人才，管理与运维问题。
+                                </li>
+                                <li class="">
+                                    我们提供完整的Hadoop 计算环境，在X86 平台上部署并提供数据分析，日常运维，环境优化
+                                    等服务。同时，我们提供数据挖掘服务，为企业最大限度的发现数据价值。
+                                </li>
+                                <li class="">
+                                    我们提供基于传统数据与大数据融合的智能化数据中心框架解决方案与咨询服务。
+                                </li>
+                                <li class="">
+                                    我们提供从数据采集，转换，融合，数据服务，数据应用等端到端咨询，实施，运维，优化
+                                    服务。
+                                </li>
+                                <li class="">
+                                    我们提供数据应用SaaS 的能力封装与开放式创新平台建设服务。
+                                </li>
+                                <li class="">
+                                    我们提供分析展现工具－Colorful Viewer，实现快速的数据报告，OLAP 分析。支持PC，
+                                    iOS，Android 的展现与分析。
+                                </li>
+                            </ol>
+                            <h2 class="solu-h2">产品特性</h2>
+                            <ol>
+                                <li>
+                                    支持主流Haoop
+                                    iMammoth 支持业界主流的Hadoop计算框架，例如：ADH，Cloudera等
+                                </li>
+                                <li class="">
+                                    支持的组件
+                                    支持X86 计算环境，并支持工业标准X86 云计算环境下的部署。
+                                </li>
+                                <li class="">
+                                    支持的组件
+                                    支持在HDFS，Hbase，HIVE，Impala 的数据管理与分析开发。
+                                </li>
+                                <li class="">
+                                    支持分析任务调度与管理
+                                    通过iMammoth 的iDataCool 组建支持MR 任务的调度与管理。
+                                </li>
+                                <li class="">
+                                    支持数据权限管理
+                                    支持同一大数据Hadoop 计算平台下的不同数据权限管理。使得在同一平台下支持多租户的不同大数据计算要求。
+                                </li>
+                            </ol>
+                        </div>
+                        <!-- / imamoth-->
+                        <div class="tab-pane fade" role="tabpanel" id="product-ebuy">
+                            <h2 class="solu-h2">终端支持</h2>
+                            <p class="">
+                                电子商务交易平台可以支持电视商城，手机微信商城，PC桌面浏览器商城。为客户提供多屏融合，多渠道融合的电子交易平台。
+                            </p>
+                            <h2 class="solu-h2">精准营销</h2>
+                            <p class="">
+                                依赖大数据处理与客户行为匹配技术，进行客户细分，完成精确营销支撑。提升平台的价值转化率。
+                            </p>
+                            <h2 class="solu-h2">架构设计</h2>
+                            <p class="">
+                                平台采用业界较为稳定的，优秀的分布式后台架构，基于SoA 的服务能力设计方式，使得平台可以支持高并发线性扩展，保证平台的稳定性。
+                            </p>
+                        </div>
+                        <!-- / 电子商务 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,7 +212,56 @@
         <div id="service" class="page-content">
             <div class="container">
                 <div class="row">
-                    spa/page 服务
+                    <div class="col-xs-2 col-md-3">
+                        <ul class="nav nav-tabs nav-stacked" role="tablist">
+                            <li class="disabled" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#service-dataPaltform"
+                                   aria-controls="service-dataPaltform"
+                                   aria-expanded="true">
+                                    数据平台
+                                </a>
+                            </li>
+                            <li class="disabled" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#service-dataMaintain"
+                                   aria-controls="service-dataMaintain"
+                                   aria-expanded="false">
+                                    数据运维
+                                </a>
+                            </li>
+                            <li class="active" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#service-dataConsult"
+                                   aria-controls="service-dataConsult"
+                                   aria-expanded="false">
+                                    服务咨询
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-10 col-md-9 tab-content" role="main">
+                        <div class="tab-pane fade" role="tabpanel" id="service-dataPaltform">{{content}}</div>
+                        <div class="tab-pane fade" id="service-dataMaintain">{{content}}</div>
+                        <div class="tab-pane fade active in" id="service-dataConsult">
+                            <h2 class="solu-h2">系统平台销售服务</h2>
+                            <ol>
+                                <li>
+                                    融智辉腾提供专业的咨询服务给客户，分为客户需求分析，平台系统搭建和售后专业服务支持。客户需求分析将帮助客户分析搭建系统平台的可行性，以及如何选择产品组件针对性地满足客户的需求。
+                                </li>
+                                <li class="">
+                                    在系统实施阶段，融智辉腾咨询人员会帮助客户理解系统搭建所需的各种条件，并提供培训给使用者。
+                                </li>
+                                <li class="">
+                                    在系统完成以后，咨询人员会响应客户的各种请求，并根据客户和公司软件的发展，提醒客户升级系统以便提升系统平台处理能力。
+                                </li>
+                            </ol>
+                            <h2 class="solu-h2">行业高端咨询服务</h2>
+                            <p class="">
+                                提供收费的专业服务给客户，帮助用户解决产品和技术上的问题。
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -109,7 +269,82 @@
         <div id="solu" class="page-content">
             <div class="container">
                 <div class="row">
-                    spa/page 解决方案
+                    <div class="col-xs-2 col-md-3">
+                        <ul class="nav nav-tabs nav-stacked" role="tablist">
+                            <li class="active" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#solu-stateElectronic"
+                                   aria-controls="solu-stateElectronic"
+                                   aria-expanded="true">
+                                    国家电网某省公司
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#solu-traffic"
+                                   aria-controls="solu-traffic"
+                                   aria-expanded="true">
+                                    中国交通运输行业
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#solu-telecommunications"
+                                   aria-controls="solu-telecommunications"
+                                   aria-expanded="false">
+                                    电信行业
+                                </a>
+                            </li>
+                            <li class="disabled" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#solu-medicine"
+                                   aria-controls="solu-medicine"
+                                   aria-expanded="false">
+                                    医疗行业
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-10 col-md-9 tab-content" role="main">
+                        <div class="tab-pane fade active in" role="tabpanel" id="solu-stateElectronic">
+                            <h2 class="solu-h2">项目介绍</h2>
+                            <ol>
+                                <li>
+                                    利用iMammoth 平台为国电内部企业与部门提供大数据清洗，备份，分析服务。
+                                </li>
+                                <li class="">
+                                    国电内部至少8 家企业单位，构建配网运行数据分析，用户电量分析，IT 系统与网络安全风险评估分析等应用。
+                                </li>
+                            </ol>
+                            <h2 class="solu-h2">特点</h2>
+                            <p class="">
+                                一个大数据平台，一套运维人员，多个企业内部用户，简单易用的开发环境和运维环境。
+                            </p>
+                            <h2 class="solu-h2">益处</h2>
+                            <p class="">
+                                减少重复建设，聚合人才能力。
+                            </p>
+                        </div>
+                        <!--/ 国网某电力公司-->
+                        <div class="tab-pane fade" id="solu-traffic">
+                            <h2 class="solu-h2">简介</h2>
+                            <p class="">
+                                利用iMammoth 实现全国危险货车，客运班线，旅游包车的动态监控与管理，以及城际间国道，省道的路况分析
+                            </p>
+                        </div>
+                        <!-- / 中国交通运输 -->
+                        <div class="tab-pane fade" id="solu-telecommunications">
+                            <h2 class="solu-h2">简介</h2>
+                            <p class="">
+                                利用Colorful Viewer 实现用户上网快速分析与报告。
+                            </p>
+                        </div>
+                        <!--/ 电信行业 -->
+                        <div class="tab-pane fade" id="solu-medicine">
+
+                        </div>
+                        <!--/ 医疗行业 -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,7 +352,7 @@
         <div id="app" class="page-content">
             <div class="container">
                 <div class="row">
-                    spa/page 应用
+                    <h2 class="solu-h2">应用</h2>
                 </div>
             </div>
         </div>
@@ -125,36 +360,95 @@
         <div id="about" class="page-content">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="list-group">
-                            <a href="#about-outline" class="list-group-item active">
+                    <div class="col-xs-2 col-md-3">
+                        <ul class="nav nav-tabs nav-stacked" role="tablist">
+                            <li class="active" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-outline"
+                                   aria-controls="about-outline"
+                                   aria-expanded="true">
                                 公司简介
-                            </a>
-                            <a href="#about-culture" class="list-group-item">企业文化</a>
-                            <a href="#about-mgmt" class="list-group-item">管理团队</a>
-                            <a href="#about-mem" class="list-group-item">合作伙伴</a>
-                            <a href="#about-link" class="list-group-item">联系我们</a>
-                            <a href="#about-job" class="list-group-item">工作机会</a>
-                        </div>
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-culture"
+                                   aria-controls="about-culture"
+                                   aria-expanded="true">
+                                    企业文化
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-mgmt"
+                                   aria-controls="about-mgmt"
+                                   aria-expanded="true">
+                                    管理团队
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-mem"
+                                   aria-controls="about-mem"
+                                   aria-expanded="true">
+                                    合作伙伴
+                                </a>
+                            </li>
+                            <li class="" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-link"
+                                   aria-controls="about-link"
+                                   aria-expanded="true">
+                                    联系我们
+                                </a>
+                            </li>
+                            <li class="disabled" role="presentation">
+                                <a href="javascript:;" data-toggle="tab"
+                                   data-target="#about-job"
+                                   aria-controls="about-job"
+                                   aria-expanded="true">
+                                    工作机会
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-md-9" role="main">
-                        <div class="row" id="about-outline">
-                            "    北京融智辉腾科技有限公司成立于2014 年4 月，总部设在北京，在上海，广州设有办事处。还设有武汉研发中心，武汉交付中心和北京交付中心。公司规模近50 人。是一家创业创新型高速发展的数据智能化高科技企业。公司核心领导人员来自世界著名的IT 与互联网公司，如：ORACLE，IBM，HP，百度，阿里巴巴。                                        公司致力于基于数据的智能化产品，应用及解决方案。在交通，电信，能源，金融保险等行业有非常好的实践与成功案例。为客户创造价值是我们的责任，我们致力于利用数据发现科技来优化与变革传统的业务模式。为此，我们提供如下的优秀产品与优质服务：                                                                                                                                       1）  数据平台产品：                                                                                                                                    iMammoth 是基于业界主流Hadoop 框架开发的一套多租户大数据开发平台。
-                            2)   数据动态交付分析产品：
-                            Colorful Viewer 是一套支持动态OLAP 分析，报表分析与展现的快速实现工具。具有开发快速，展现丰富，动态交互的特点。"
+                    <div class="col-xs-10 col-md-9" role="main">
+                        <div class="tab-pane fade active in" role="tabpanel" id="about-outline">
+                            <p class="">
+                                北京融智辉腾科技有限公司成立于2014 年4 月，总部设在北京，在上海，广州设有办事处。还设有武汉研发中心，武汉交付中心和北京交付中心。公司规模近50 人。是一家创业创新型高速发展的数据智能化高科技企业。公司核心领导人员来自世界著名的IT 与互联网公司，如：ORACLE，IBM，HP，百度，阿里巴巴。                                        公司致力于基于数据的智能化产品，应用及解决方案。在交通，电信，能源，金融保险等行业有非常好的实践与成功案例。为客户创造价值是我们的责任，我们致力于利用数据发现科技来优化与变革传统的业务模式。
+                                为此，我们提供如下的优秀产品与优质服务：
+                            </p>
+                            <h2 class="solu-h2">1) 数据平台产品:</h2>
+                            <p class="">
+                                iMammoth 是基于业界主流Hadoop 框架开发的一套多租户大数据开发平台。
+                            </p>
+                            <h2 class="solu-h2">2) 数据动态交付分析产品:</h2>
+                            <p class="">
+                                Colorful Viewer 是一套支持动态OLAP 分析，报表分析与展现的快速实现工具。具有开发快速，展现丰富，动态交互的特点。
+                            </p>
                         </div>
-                        <div class="row" id="about-culture">以客户满意为中心，以创新服务促产出，数据智能改变生活</div>
-                        <div class="row" id="about-mgmt">企业文化</div>
-                        <div class="row" id="about-mem">国家电网某省公司，中国交通，电信公司等等</div>
-                        <div class="row" id="about-link">地址：北京市东城区东长安街1号东方广场东2 办公楼19 层</div>
-                        <div class="row" id="about-job">工作机会</div>
+                        <div class="tab-pane fade" role="tabpanel" id="about-culture">
+                            以客户满意为中心，以创新服务促产出，数据智能改变生活</div>
+                        <div class="tab-pane fade" role="tabpanel" id="about-mgmt"></div>
+                        <div class="tab-pane fade" id="about-mem">
+                            国家电网某省公司，中国交通，电信公司等等
+                        </div>
+                        <!--/@FIXME: 图标展示-->
+                        <div class="tab-pane fade" id="about-link">
+                            地址：北京市东城区东长安街1号东方广场东2 办公楼19 层
+                            电话：010-85200310
+                            联系人：
+                        </div>
+                        <!--/@FIXME: 加载地图 -->
+                        <div class="tab-pane fade" id="about-job">工作机会</div>
                     </div>
                 </div>
             </div>
         </div>
         <!--/ spa/page 关于我们 -->
     </div>
-    <div class="footer navbar-fixed-bottom">
+    </div>
+    <div class="footer">
         <div class="files">
             <div class="icp-b">
                 <i>
@@ -167,6 +461,7 @@
     </div>
     <!-- / 版权信息 -->
 </div>
+<!--/ .site-main -->
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/jquery.flexslider.js"></script>
@@ -175,17 +470,18 @@
 $(function () {
     // 图片展示
     $('.flexslider').flexslider({
-        animation: 'fade',
-        controlsContainer: '.flex-container',
+        animation: 'slide',
+//        controlsContainer: '.flex-container',
         itemWidth: '100%',
         itemMargin: 0,
         smoothHeight: true,
-        animationLoop: false,
-        controlNav: true,
+        animationLoop: true,
+//        controlNav: 'control-paging',
         directionNav: true,
         pauseOnHover: true,
-        slideshowSpeed: 3000,
+        slideshowSpeed: 1500,
         start: function(slider){
+            console.log('[default]');
         }
     });
     var ctab = "index";
@@ -207,25 +503,33 @@ $(function () {
             // 2. 切换内容
             // 3. 更新功能按钮栏状态
             switchNav('index');
+            return false;
         },
         "product": function () {
             switchNav('product');
+            return false;
         },
         "service": function () {
             switchNav('service');
+            return false;
         },
         "solu": function () {
             switchNav('solu');
+            return false;
         },
         "app": function () {
-            switchNav('app');
+            console.log('开发中...');
+//            switchNav('app');
+            return false;
         },
         "about": function () {
             switchNav('about');
+            return false;
         }
     });
 
     routie('index');
+    // tab
 });
 </script>
 </body>
