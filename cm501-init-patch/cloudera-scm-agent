@@ -1,0 +1,218 @@
+#!/bin/bash
+#
+# (c) Copyright 2011 Cloudera, Inc.
+#
+# init script for the Cloudera SCM Agent.
+#
+# chkconfig: 2345 90 10
+# description: Cloudera SCM Agent.
+
+### BEGIN INIT INFO
+# Provides: cloudera-scm-agent
+# Required-Start: $local_fs $network $syslog
+# Should-Start:
+# Required-Stop:
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+# Short-Description: Cloudera SCM Agent
+# Description: Cloudera SCM Agent
+### END INIT INFO
+
+# Source function library.
+if [ -f /etc/rc.d/init.d/functions ]; then
+  . /etc/rc.d/init.d/functions
+elif [ -f /lib/lsb/init-functions ]; then
+  . /lib/lsb/init-functions
+  . /etc/rc.status
+  rc_reset
+fi
+
+prog="cloudera-scm-agent"
+start_timeout=5
+kill_timeout=40
+
+# Source defaults.
+#CMF_DEFAULTS=$(readlink -e $(dirname ${BASH_SOURCE-$0})/../default)
+#CMF_DEFAULTS=${CMF_DEFAULTS:-/etc/default}
+
+# Source defaults file.
+CUSTOM_CMF_SCRIPT=$(readlink -e $0)
+CUSTOM_CMF_PROG=$(basename $CUSTOM_CMF_SCRIPT)
+
+#CMF_DEFAULTS=$(readlink -e $(dirname ${BASH_SOURCE-$0})/../default)
+CMF_DEFAULTS=$(readlink -e $(dirname $CUSTOM_CMF_SCRIPT)/../default)
+CMF_DEFAULTS=${CMF_DEFAULTS:-/etc/default}
+
+# cmf profile configuration
+
+[ -e $CMF_DEFAULTS/$prog ] && . $CMF_DEFAULTS/$prog
+
+# Paths to configuration, binaries, etc
+AGENT_SCRIPT=${CMF_SBINDIR:-/usr/sbin}/cmf-agent
+AGENT_OUT=${CMF_VAR:-/var}/log/$prog/$prog.out
+
+if [ ! -f $AGENT_SCRIPT ]; then
+  echo "File not found: $AGENT_SCRIPT"
+  exit 1
+fi
+
+#pid file
+pidfile=${PIDFILE-${CMF_VAR:-/var}/run/$prog.pid}
+
+is_suse=`[ -e /etc/SuSE-release ] && echo 1 || echo 0`
+
+RETVAL=0
+
+local_checkpid() {
+  local local_prog="$1"
+  local local_pidfile="$2"
+
+  if [ ! -f $local_pidfile ]; then
+    return 1
+  fi
+
+  if [ $is_suse -eq 1 ]; then
+    pid=`cat $local_pidfile`
+    full_path=`ps -o args -p $pid -w -w | grep $local_prog | cut -d ' ' -f 1`
+    pidofproc -p $local_pidfile $full_path > /dev/null
+  else
+    checkpid `cat $local_pidfile`
+  fi
+  return $?
+}
+
+local_killproc() {
+  local local_prog="$1"
+  local local_pidfile="$2"
+
+  if [ $is_suse -eq 1 ]; then
+    pid=`cat $local_pidfile`
+    full_path=`ps -o args -p $pid -w -w | grep $local_prog | cut -d ' ' -f 1`
+    killproc -t $kill_timeout -p $local_pidfile $full_path
+  else
+    killproc -p $local_pidfile -d $kill_timeout $local_prog
+  fi
+  return $?
+}
+
+local_check_start() {
+  if [ $is_suse -eq 1 ]; then
+    local_checkpid $prog $pidfile && log_success_msg || log_failure_msg
+  else
+    local_checkpid $prog $pidfile && echo_success || echo_failure
+  fi
+  return $?
+}
+
+local_print_stop() {
+  if [ $is_suse -eq 1 ]; then
+    [ $RETVAL = 0 ] && log_success_msg || log_failure_msg
+  else
+    # killproc prints on Redhat.
+    echo
+  fi
+}
+
+start() {
+  # check to see if the agent is already running by looking at the pid file
+  # and grepping the process table.
+  local_checkpid $prog $pidfile
+  if [ $? = 0 ]; then
+    echo "$prog is already running"
+    exit 0
+  fi
+
+  cat < /dev/null > $AGENT_OUT
+  echo -n $"Starting $prog: "
+
+  nohup $AGENT_SCRIPT $CMF_AGENT_ARGS >> $AGENT_OUT 2>&1 </dev/null &
+  agent_pid=$!
+  echo $agent_pid > $pidfile
+  # sleep so the process can make its way to the process table.
+  sleep $start_timeout
+  disown -ar
+  # print status information.
+  local_check_start
+  RETVAL=$?
+  echo
+  return $RETVAL
+}
+
+clean_start() {
+  CMF_AGENT_ARGS="$CMF_AGENT_ARGS --clear_agent_dir"
+  start
+}
+
+local_stop() {
+  local local_prog="$1"
+  local local_pidfile="$2"
+
+  local_checkpid $local_prog $local_pidfile
+  if [ $? != 0 ]; then
+    echo "$local_prog is already stopped"
+    return 0
+  fi
+
+  echo -n "Stopping $local_prog: "
+  local_killproc $local_prog $local_pidfile
+  RETVAL=$?
+  local_print_stop
+  return $RETVAL
+}
+
+stop() {
+  local_stop $prog $pidfile
+  [ $? = 0 ] && rm -f ${pidfile}
+}
+
+hard_stop() {
+  stop
+  # Additionally stop the supervisord
+  local_stop supervisord ${CMF_VAR:-/var}/run/$prog/supervisor/supervisord.pid
+}
+
+status_fn() {
+  if [ $is_suse -eq 1 ]; then
+    echo -n "Checking for service $prog"
+    local_checkpid $prog $pidfile
+    rc_status -v
+  else
+    status -p $pidfile $prog
+  fi
+  RETVAL=$?
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status_fn
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  clean_start)
+    clean_start
+    ;;
+  hard_stop)
+    hard_stop
+    ;;
+  hard_restart)
+    hard_stop
+    start
+    ;;
+  clean_restart)
+    hard_stop
+    clean_start
+    ;;
+  *)
+    echo $"Usage: $prog {start|stop|restart|clean_start|hard_stop|hard_restart|clean_restart|status}"
+    RETVAL=3
+esac
+
+exit $RETVAL
