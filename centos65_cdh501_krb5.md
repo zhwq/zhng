@@ -64,7 +64,7 @@ Centos6.5 x64 cdh5.0.1 kerberos 配置记录整理 20150509
 		alternatives --install /usr/bin/java java /usr/java/latest/bin/java 20
    		alternatives --install /usr/bin/javac javac /usr/java/latest/bin/javac 20
    		alternatives --install /usr/bin/javaws javaws /usr/java/latest/bin/javaws 20
-   		alternatives --install /usr/bin/jar jar /usr/latest/bin/jar 20
+   		alternatives --install /usr/bin/jar jar /usr/java/latest/bin/jar 20
    		alternatives --install /usr/bin/jps jps /usr/java/latest/bin/jps 20
  
    		
